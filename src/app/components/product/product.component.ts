@@ -1,7 +1,8 @@
+import { ProductService } from './../../services/product.service';
 import { ProductResponseModel } from './../../models/productResponseModel';
 import { Product } from './../../models/product';
 import { Component, OnInit } from '@angular/core';
-import{HttpClient} from "@angular/common/http"
+
 import { threadId } from 'worker_threads';
 
 @Component({
@@ -10,21 +11,19 @@ import { threadId } from 'worker_threads';
   styleUrls: ['./product.component.css']
 })
 export class ProductComponent implements OnInit {
- 
   products:Product[] = [];
-  apiUrl ="http://localhost:44332/api/products/getall"
+  dataLoaded=false;
 
-  
-  constructor(private httpClient:HttpClient) { }
+  constructor(private productService:ProductService) { }
 
   ngOnInit(): void {
     this.getProducts()
 
   }
   getProducts(){
-   this.httpClient.get<ProductResponseModel>(this.apiUrl).subscribe((response)=> {
-     this.products=response.data
-   })
+    this.productService.getProducts().subscribe(response=>{
+      this.products= response.data
+      this.dataLoaded =true;
+    })
   }
-
 }
